@@ -1,0 +1,86 @@
+const express = require("express");
+const { Withdraw, validateW } = require("../models/withdraw");
+const { Wallet } = require("../models/wallet");
+const IsAdminOrUser = require("../middlewares/AuthMiddleware");
+const router = express.Router();
+
+router.use(IsAdminOrUser);
+
+router.get("/", async (req, res) => {
+  try {
+    const getAllRequests = await Withdraw.findAll();
+    if (!getAllRequests)
+      return res.status(404).send("no deposit and requests found");
+    return res.send(getAllRequests);
+  } catch (error) {
+    return res.send(error.message);
+  }
+});
+
+router.get("/:user_id", async (req, res) => {
+  try {
+    const getAllRequestsByUserId = await Withdraw.findAll({
+      where: { user_id: req.params.user_id },
+    });
+    if (!getAllRequestsByUserId)
+      return res.status(404).send("no deposit and requests found");
+    return res.send(getAllRequestsByUserId);
+  } catch (error) {
+    return res.send(error.message);
+  }
+});
+
+router.post("/", async (req, res) => {
+  try {
+    const { error } = validateW(req.body);
+    if (error) return res.status(400).send(error.details[0].message);
+
+    const userWallet = await Wallet.findOne({
+      where: { user_id: req.body.user_id },
+    });
+    if (!userWallet) return res.status(404).send("Wallet not created");
+    if (userWallet.balance < req.body.amount)
+      return res.status(406).send("balance is less then your withdraw amount.");
+    userWallet.balance -= req.body.amount;
+    await userWallet.save();
+
+    await Withdraw.create(req.body);
+
+    return res.send("Request Sent successfully");
+  } catch (error) {
+    return res.send(error.message);
+  }
+});
+
+router.put("/:id", async (req, res) => {
+  try {
+    if (!req.params.id) return res.status(400).send("Id is not provided.");
+
+    const WithdrawRequest = await Withdraw.findOne({
+      where: { id: req.params.id },
+    });
+
+    if (!WithdrawRequest) return res.status(404).send("request not found.");
+
+    WithdrawRequest.status = req.body.status;
+    WithdrawRequest.status_description = req.body.status_description
+      ? req.body.status_description
+      : "reason not specified";
+
+    const userWallet = await Wallet.findOne({
+      where: { user_id: req.body.user_id },
+    });
+    if (!userWallet) return res.status(404).send("Wallet not found");
+    if (req.body.status === "canceled") {
+      userWallet.balance += parseFloat(WithdrawRequest.amount);
+      await userWallet.save();
+    }
+    await WithdrawRequest.save();
+
+    return res.status(200).send("updated");
+  } catch (error) {
+    return res.send(error.message);
+  }
+});
+
+module.exports = router;

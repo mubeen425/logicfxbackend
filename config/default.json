@@ -1,0 +1,10 @@
+{
+    "DEVELOPMENT": {
+        "USERNAME": "root",
+        "PASSWORD": "",
+        "DATABASE":"prime_crypto",
+        "HOST": "localhost",
+        "PORT": 3306
+      },
+      "jwtPrivateKey":"jwtPrivateKey"
+}
