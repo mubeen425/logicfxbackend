@@ -1,6 +1,7 @@
 const express = require("express");
 const { Deposit, validateD } = require("../models/deposit");
 const { Wallet } = require("../models/wallet");
+const { User } = require("../models/user");
 const IsAdminOrUser = require("../middlewares/AuthMiddleware");
 const router = express.Router();
 router.use(IsAdminOrUser);
@@ -32,6 +33,10 @@ router.post("/", async (req, res) => {
   try {
     const { error } = validateD(req.body);
     if (error) return res.status(400).send(error.details[0].message);
+
+    const checkIfUser = await User.findOne({ where: { id: user_id } });
+    if (!checkIfUser)
+      return res.status(500).send("internal server error could not server");
 
     await Deposit.create(req.body);
 

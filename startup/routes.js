@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 const authRouter = require("../routes/Auth");
 const depositRouter = require("../routes/Deposits");
 const withdrawRouter = require("../routes/Withdraw");
@@ -8,9 +9,9 @@ const adminWatchlistRouter = require("../routes/admin_watchlist");
 const activeTradeRouter = require("../routes/Active_Trades");
 
 module.exports = function (app) {
+  app.use(cors());
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
-
   app.use("/api/user", authRouter);
   app.use("/api/deposit", depositRouter);
   app.use("/api/withdraw", withdrawRouter);

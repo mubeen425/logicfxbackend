@@ -4,4 +4,6 @@ require("./startup/routes")(app);
 require("./startup/db")();
 
 const port = process.env.Port || 4000;
-app.listen(port, () => console.log("listening on port " + port));
+app.listen(port, "192.168.2.102", () =>
+  console.log("listening on port " + port)
+);
