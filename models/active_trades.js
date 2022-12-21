@@ -71,9 +71,9 @@ function validateAT(req) {
     investment: Joi.required(),
     admin_profit: Joi.string(),
     trade: Joi.string(),
-    purchase_units: Joi.string(),
-    take_profit: Joi.string(),
-    stop_loss: Joi.string(),
+    purchase_units: Joi.number(),
+    take_profit: Joi.number(),
+    stop_loss: Joi.number(),
   });
 
   return schema.validate(req);

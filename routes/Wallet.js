@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const IsAdmin = require("../middlewares/AdminMiddleware");
+const IsAdminOrUser = require("../middlewares/AuthMiddleware");
 const { Wallet, validateWallet } = require("../models/wallet");
-router.use(IsAdmin);
+router.use(IsAdminOrUser);
 router.post("/", async (req, res) => {
   try {
     if (!req.body.user_id)
@@ -16,6 +16,7 @@ router.post("/", async (req, res) => {
 
 router.get("/:user_id", async (req, res) => {
   try {
+    if (!req.params.user_id) return res.status(400).send("id required");
     const findWalletWithUserId = await Wallet.findOne({
       where: { user_id: req.params.user_id },
     });

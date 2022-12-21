@@ -34,7 +34,7 @@ router.post("/", async (req, res) => {
     const { error } = validateD(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
-    const checkIfUser = await User.findOne({ where: { id: user_id } });
+    const checkIfUser = await User.findOne({ where: { id: req.body.user_id } });
     if (!checkIfUser)
       return res.status(500).send("internal server error could not server");
 

@@ -38,19 +38,6 @@ const User = connection.define(
     },
     email: {
       type: DataTypes.STRING,
-      unique: true,
-      allowNull: false,
-      validate: {
-        notEmpty: {
-          arg: true,
-          msg: "Username must not be empty",
-        },
-        isEmail: {
-          arg: true,
-          msg: "Please enter a valid email address",
-        },
-        notNull: { msg: "email is required" },
-      },
     },
     password: {
       type: DataTypes.STRING,

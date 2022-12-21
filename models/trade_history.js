@@ -40,6 +40,13 @@ const Trade_History = connection.define(
     close_trade: {
       type: DataTypes.FLOAT,
     },
+    partial_user_value: {
+      type: DataTypes.FLOAT,
+    },
+    trade_type: {
+      type: DataTypes.STRING,
+    },
+
     open_admin_profit: {
       type: DataTypes.FLOAT,
     },
@@ -56,7 +63,7 @@ const Trade_History = connection.define(
       type: DataTypes.FLOAT,
     },
     open_at: {
-      type: DataTypes.DATE,
+      type: DataTypes.STRING,
     },
     closed_at: {
       type: DataTypes.DATE,
