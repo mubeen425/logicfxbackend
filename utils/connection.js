@@ -1,6 +1,6 @@
 const config = require("config");
 const { Sequelize } = require("sequelize");
-const { DATABASE, USERNAME, PASSWORD, HOST, PORT } = config.get("DEVELOPMENT");
+const { DATABASE, USERNAME, PASSWORD, HOST, PORT } = config.get("DBCONFIG");
 
 module.exports = new Sequelize(DATABASE, USERNAME, PASSWORD, {
   host: HOST,

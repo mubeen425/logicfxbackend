@@ -1,0 +1,6 @@
+{
+    "DBCONFIG": {
+        "PASSWORD": "db_password"
+      },
+      "jwtPrivateKey":"jwt_key"
+    }

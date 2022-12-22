@@ -79,4 +79,20 @@ router.put("/:id", async (req, res) => {
   }
 });
 
+router.delete("/:id", async (req, res) => {
+  try {
+    const checkIfExist = await Deposit.findOne({
+      where: {
+        id: req.params.id,
+      },
+    });
+    if (!checkIfExist) return res.status(404).send("not found");
+
+    await checkIfExist.destroy();
+    return res.send("deleted successfuly");
+  } catch (error) {
+    return res.send(error.message);
+  }
+});
+
 module.exports = router;

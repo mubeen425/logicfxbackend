@@ -43,11 +43,14 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:user_id/:coin_name", async (req, res) => {
   try {
     const checkIfExist = await User_Watchlist.findOne({
       where: {
-        id: req.params.id,
+        [Op.and]: [
+          { user_id: req.params.user_id },
+          { coin_name: req.params.coin_name },
+        ],
       },
     });
     if (!checkIfExist) return res.status(404).send("not found");

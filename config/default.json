@@ -1,12 +1,4 @@
 {
-    "DEVELOPMENT": {
-        "USERNAME": "root",
-        "PASSWORD": "",
-        "DATABASE":"prime_crypto",
-        "HOST": "localhost",
-        "PORT": 3306
-      },
-      "jwtPrivateKey":"jwtPrivateKey",
-      "marketApi":"https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest?CMC_PRO_API_KEY=d335ec87-6e3a-415d-a155-11167894de75&start=1&limit=25&convert=USD",
-       "baseurl":"http://192.168.2.102:4000"
+    "DBCONFIG": {
+      }
     }
