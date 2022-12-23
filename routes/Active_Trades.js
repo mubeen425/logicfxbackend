@@ -4,6 +4,7 @@ const { Wallet } = require("../models/wallet");
 const IsAdminOrUser = require("../middlewares/AuthMiddleware");
 const Trade_History = require("../models/trade_history");
 const Joi = require("joi");
+const CoinMarket = require("../models/coin_market");
 
 const router = express.Router();
 

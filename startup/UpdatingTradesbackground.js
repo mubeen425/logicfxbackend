@@ -1,25 +1,26 @@
 const config = require("config");
 const axios = require("axios");
 const { Active_Trade } = require("../models/active_trades");
+const { Admin_Watchlist } = require("../models/admin_watchlist");
+const CoinMarket = require("../models/coin_market");
+const { Op } = require("sequelize");
 
 module.exports = async () => {
   try {
+    let res = await getCoinMarketData();
+    let data = await filterWithAdminWatchlist(res.data.data);
     console.log("in function");
     const active_trades = await Active_Trade.findAll();
-    if (active_trades.length === 0) return console.log(active_trades.length);
-
-    let res = await getCoinMarketData();
-    let data = res.data.data;
-    if (data.length === 0) return console.log("returned from data");
     console.log(data);
-    if (data) {
+    if (data.length === 0) return console.log("returned from data");
+    if (active_trades.length > 0) {
       active_trades.forEach((x) => {
         const { crypto_name, purchase_units, take_profit, stop_loss } = x;
         data.forEach((i) => {
           console.log("looping data");
           if (i.name === crypto_name) {
             console.log("condition true--");
-            let price = i.quote.USD.price;
+            let price = i.price;
             // console.log(price);
             let val = price * purchase_units;
             if (val >= take_profit + x.trade) {
@@ -34,7 +35,7 @@ module.exports = async () => {
       });
       return console.log("ok");
     }
-    return console.log("ok");
+    return;
   } catch (error) {
     return console.log(error.message);
   }
@@ -44,6 +45,71 @@ const getCoinMarketData = async () => {
   return await axios
     .get(config.get("marketApi"))
     .catch((error) => console.log(error));
+};
+
+const filterWithAdminWatchlist = async (coins) => {
+  try {
+    if (coins.length > 0) {
+      const adminwathlist = await Admin_Watchlist.findAll({ raw: true });
+      console.log(adminwathlist);
+      const todeleteCoins = adminwathlist.map((c) => c.coin_name);
+      console.log(todeleteCoins);
+      await CoinMarket.destroy({
+        where: { name: { [Op.in]: todeleteCoins } },
+      });
+      const extractAndFilterCoinData = coins.map((c) => {
+        const {
+          price,
+          volume_24h,
+          volume_change_24h,
+          percent_change_1h,
+          percent_change_24h,
+          percent_change_7d,
+          percent_change_30d,
+          market_cap,
+        } = c.quote.USD;
+        return {
+          id: c.id,
+          name: c.name,
+          symbol: c.symbol,
+          price: price,
+          volume_24h: volume_24h,
+          volume_change_24h: volume_change_24h,
+          percent_change_1h: percent_change_1h,
+          percent_change_24h: percent_change_24h,
+          percent_change_7d: percent_change_7d,
+          percent_change_30d: percent_change_30d,
+          market_cap: market_cap,
+          max_supply: c.max_supply,
+          circulating_supply: c.circulating_supply,
+          total_supply: c.total_supply,
+        };
+      });
+      const filterOnExtraction = extractAndFilterCoinData.filter(
+        (c) => !todeleteCoins.includes(c.name)
+      );
+      await CoinMarket.bulkCreate(filterOnExtraction, {
+        updateOnDuplicate: [
+          "symbol",
+          "price",
+          "volume_24h",
+          "volume_change_24h",
+          "percent_change_1h",
+          "percent_change_24h",
+          "percent_change_7d",
+          "percent_change_30d",
+          "market_cap",
+          "max_supply",
+          "circulating_supply",
+          "total_supply",
+        ],
+      });
+
+      return filterOnExtraction;
+    } else return [];
+  } catch (error) {
+    console.log(error.message);
+  }
 };
 
 const deleteTrade = async (id, price) => {

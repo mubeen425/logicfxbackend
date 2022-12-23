@@ -4,7 +4,9 @@ const { Op } = require("sequelize");
 const { User_Watchlist, validateUW } = require("../models/user_watchlist");
 const IsAdminOrUser = require("../middlewares/AuthMiddleware");
 const router = express.Router();
+
 router.use(IsAdminOrUser);
+
 router.get("/:user_id", async (req, res) => {
   try {
     if (!req.params.user_id) return res.status(400).send("user id is missing");
@@ -43,13 +45,13 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.delete("/:user_id/:coin_name", async (req, res) => {
+router.delete("/:user_id", async (req, res) => {
   try {
     const checkIfExist = await User_Watchlist.findOne({
       where: {
         [Op.and]: [
           { user_id: req.params.user_id },
-          { coin_name: req.params.coin_name },
+          { coin_name: req.body.coin_name },
         ],
       },
     });

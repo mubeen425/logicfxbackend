@@ -9,6 +9,7 @@ const userWatchlistRouter = require("../routes/user_watchlist");
 const adminWatchlistRouter = require("../routes/admin_watchlist");
 const activeTradeRouter = require("../routes/Active_Trades");
 const activeTradeHistory = require("../routes/trade_history");
+const coinMarketRouter = require("../routes/coin_market");
 
 module.exports = function (app) {
   app.use(cors());
@@ -23,6 +24,7 @@ module.exports = function (app) {
   app.use("/api/adminwatchlist", adminWatchlistRouter);
   app.use("/api/activetrade", activeTradeRouter);
   app.use("/api/tradehistory", activeTradeHistory);
+  app.use("/coinmarket", coinMarketRouter);
 };
 
 // export const Baseurl = "http://192.168.2.102:4000";

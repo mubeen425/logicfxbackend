@@ -10,7 +10,7 @@ app.listen(port, "192.168.2.102", () => {
   console.log("listening on port " + port);
 });
 
-setInterval(() => {
-  console.log("in interval---");
-  UpdateTrades();
-}, 20000);
+// setInterval(() => {
+//   console.log("in interval---");
+//   UpdateTrades();
+// }, 30000);
