@@ -41,6 +41,9 @@ router.post("/", async (req, res) => {
     if (!userWallet) return res.status(404).send("Wallet not created");
     if (userWallet.balance < req.body.amount)
       return res.status(406).send("balance is less then your withdraw amount.");
+
+    if (req.body.amount <= 0) return res.status(406).send("Invalid Amount");
+
     userWallet.balance -= req.body.amount;
     await userWallet.save();
 

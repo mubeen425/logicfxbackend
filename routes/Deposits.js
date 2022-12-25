@@ -23,6 +23,7 @@ router.get("/:user_id", async (req, res) => {
     });
     if (!getAllRequestsByUserId.length > 0)
       return res.send({ message: "no deposit requests found" });
+
     return res.send(getAllRequestsByUserId);
   } catch (error) {
     return res.send({ message: error.message });
@@ -36,6 +37,8 @@ router.post("/", async (req, res) => {
 
     const checkIfUser = await User.findOne({ where: { id: req.body.user_id } });
     if (!checkIfUser) return res.status(500).send("internal server error");
+
+    if (req.body.amount <= 0) return res.status(406).send("Invalid Amount");
 
     await Deposit.create(req.body);
 
