@@ -67,13 +67,13 @@ function validateAT(req) {
     user_id: Joi.required(),
     crypto_name: Joi.string().required(),
     crypto_symbol: Joi.string().required(),
-    crypto_purchase_price: Joi.required(),
-    investment: Joi.required(),
-    admin_profit: Joi.string(),
-    trade: Joi.string(),
-    purchase_units: Joi.number(),
-    take_profit: Joi.number(),
-    stop_loss: Joi.number(),
+    crypto_purchase_price: Joi.number().required(),
+    investment: Joi.number().required(),
+    admin_profit: Joi.optional(),
+    trade: Joi.optional(),
+    purchase_units: Joi.optional(),
+    take_profit: Joi.optional(),
+    stop_loss: Joi.optional(),
   });
 
   return schema.validate(req);

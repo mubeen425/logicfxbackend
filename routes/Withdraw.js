@@ -10,10 +10,10 @@ router.get("/", async (req, res) => {
   try {
     const getAllRequests = await Withdraw.findAll();
     if (!getAllRequests)
-      return res.status(404).send("no deposit and requests found");
+      return res.send({ message: "no deposit and requests found" });
     return res.send(getAllRequests);
   } catch (error) {
-    return res.send(error.message);
+    return res.send({ message: error.message });
   }
 });
 
@@ -23,10 +23,10 @@ router.get("/:user_id", async (req, res) => {
       where: { user_id: req.params.user_id },
     });
     if (!getAllRequestsByUserId)
-      return res.status(404).send("no deposit and requests found");
+      return res.send({ message: "no deposit and requests found" });
     return res.send(getAllRequestsByUserId);
   } catch (error) {
-    return res.send(error.message);
+    return res.send({ message: error.message });
   }
 });
 

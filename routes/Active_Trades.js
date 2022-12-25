@@ -16,11 +16,11 @@ router.get("/:user_id", IsAdminOrUser, async (req, res) => {
       where: { user_id: req.params.user_id },
     });
     if (!getTrades.length > 0)
-      return res.status(404).send("NO Active Trades Found");
+      return res.send({ message: "NO Active Trades Found" });
 
     return res.send(getTrades);
   } catch (error) {
-    return res.send(error.message);
+    return res.send({ message: error.message });
   }
 });
 
@@ -38,8 +38,11 @@ router.post("/", IsAdminOrUser, async (req, res) => {
         .send("Wallet missing, report your problem to admin.");
 
     req.body.investment = parseFloat(req.body.investment);
-    if (req.body.investment > checkWallet.balance)
-      return res.status(400).send("Wallet balance is lower than your balance.");
+
+    if (req.body.investment > checkWallet.balance || req.body.investment <= 0)
+      return res
+        .status(400)
+        .send("Investment must not be zero or greater then wallet balance.");
 
     req.body.trade = req.body.investment * 0.985;
     req.body.admin_profit = req.body.investment * 0.015;
@@ -47,6 +50,7 @@ router.post("/", IsAdminOrUser, async (req, res) => {
       req.body.trade / parseFloat(req.body.crypto_purchase_price);
     checkWallet.balance -= req.body.investment;
 
+    console.log(req.body);
     await Active_Trade.create(req.body);
     await checkWallet.save();
 
@@ -176,7 +180,7 @@ const partialTradeValidate = (req) => {
   const schema = Joi.object({
     user_id: Joi.number().required(),
     trade_id: Joi.number().required(),
-    partial_trade_close_amount: Joi.number().required(),
+    partial_trade_close_amount: Joi.required(),
     crypto_sale_price: Joi.number().required(),
     trade_type: Joi.string().required(),
   });

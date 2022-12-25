@@ -10,13 +10,13 @@ router.get("/", async (req, res) => {
   try {
     const watchlist = await Admin_Watchlist.findAll();
     if (!watchlist.length > 0)
-      return res
-        .status(404)
-        .send("You haven't added any thing in the watchlist");
+      return res.send({
+        message: "You haven't added any thing in the watchlist",
+      });
 
     res.status(200).send(watchlist);
   } catch (error) {
-    return res.send(error.message);
+    return res.send({ message: error.message });
   }
 });
 

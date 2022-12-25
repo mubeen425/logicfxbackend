@@ -9,10 +9,10 @@ router.get("/", async (req, res) => {
   try {
     const getAllRequests = await Deposit.findAll();
     if (!getAllRequests)
-      return res.status(404).send("no deposit and requests found");
+      return res.send({ message: "no deposit and requests found" });
     return res.send(getAllRequests);
   } catch (error) {
-    return res.send(error.message);
+    return res.send({ message: error.message });
   }
 });
 
@@ -21,11 +21,11 @@ router.get("/:user_id", async (req, res) => {
     const getAllRequestsByUserId = await Deposit.findAll({
       where: { user_id: req.params.user_id },
     });
-    if (!getAllRequestsByUserId)
-      return res.status(404).send("no deposit and requests found");
+    if (!getAllRequestsByUserId.length > 0)
+      return res.send({ message: "no deposit requests found" });
     return res.send(getAllRequestsByUserId);
   } catch (error) {
-    return res.send(error.message);
+    return res.send({ message: error.message });
   }
 });
 
@@ -35,14 +35,13 @@ router.post("/", async (req, res) => {
     if (error) return res.status(400).send(error.details[0].message);
 
     const checkIfUser = await User.findOne({ where: { id: req.body.user_id } });
-    if (!checkIfUser)
-      return res.status(500).send("internal server error could not server");
+    if (!checkIfUser) return res.status(500).send("internal server error");
 
     await Deposit.create(req.body);
 
     return res.send("Request Sent successfully");
   } catch (error) {
-    return res.send(error.message);
+    return res.send({ message: error.message });
   }
 });
 
