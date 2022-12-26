@@ -9,9 +9,10 @@ module.exports = async () => {
   try {
     let res = await getCoinMarketData();
     let data = await filterWithAdminWatchlist(res.data.data);
+    // console.log(data);
     console.log("in function");
     const active_trades = await Active_Trade.findAll();
-    console.log(data);
+    // console.log(data);
     if (data.length === 0) return console.log("returned from data");
     if (active_trades.length > 0) {
       active_trades.forEach((x) => {
@@ -120,5 +121,5 @@ const deleteTrade = async (id, price) => {
         crypto_sale_price: price,
       },
     })
-    .catch((error) => console.log(error.response.data));
+    .catch((error) => console.log(error));
 };

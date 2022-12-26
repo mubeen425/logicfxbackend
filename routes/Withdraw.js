@@ -71,7 +71,7 @@ router.put("/:id", async (req, res) => {
       : "reason not specified";
 
     const userWallet = await Wallet.findOne({
-      where: { user_id: req.body.user_id },
+      where: { user_id: WithdrawRequest.user_id },
     });
     if (!userWallet) return res.status(404).send("Wallet not found");
     if (req.body.status === "canceled") {
