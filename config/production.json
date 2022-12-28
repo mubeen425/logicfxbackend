@@ -8,7 +8,11 @@
       "PORT": 3306
       },
       "mail":{
-        "auth":{}
+        "service": "gmail",
+        "auth": {
+          "user": "sulaimanfarooqi526@gmail.com",
+          "pass": "vhpnqgkipsmpipju"
+        }
       }
       
     }
