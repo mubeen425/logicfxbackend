@@ -8,9 +8,8 @@
       "PORT": 3306
       },
       "mail":{
-        "host": "smtp.example.com",
-        "port": 465,
         "secure":true,
+        "service":"SendPulse",
         "auth": {
           "user": "sulaimanfarooqi526@gmail.com",
           "pass": "kwqwpixxcuoiptgg"

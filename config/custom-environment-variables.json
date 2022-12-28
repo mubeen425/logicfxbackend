@@ -9,6 +9,7 @@
       "mail":{
         "host": "mail_host",
         "port": "mail_port",
+        "service":"mail_service",
         "auth": {
           "user": "mail_user_account",
           "pass": "mail_user_pass"
