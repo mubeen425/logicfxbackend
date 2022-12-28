@@ -1,11 +1,12 @@
 const express = require("express");
+const moment = require("moment");
 const { Active_Trade, validateAT } = require("../models/active_trades");
 const { Wallet } = require("../models/wallet");
-const IsAdminOrUser = require("../middlewares/AuthMiddleware");
 const Trade_History = require("../models/trade_history");
-const Joi = require("joi");
-
+const IsAdminOrUser = require("../middlewares/AuthMiddleware");
 const router = express.Router();
+
+const Joi = require("joi");
 
 // router.use(IsAdminOrUser);
 
@@ -89,7 +90,7 @@ router.post("/partial", IsAdminOrUser, async (req, res) => {
       open_trade: trade.trade,
       partial_user_value: parseFloat(partial_trade_close_amount),
       purchase_units: remainingTrade / trade.crypto_purchase_price,
-      open_at: trade.invested_date.toString(),
+      open_at: moment(trade.invested_date).format("YYYY-MM-DD HH:mm"),
       trade_type: req.body.trade_type,
     };
 
@@ -147,7 +148,7 @@ router.delete("/:id", async (req, res) => {
       investment: trade.investment,
       open_trade: trade.trade,
       purchase_units: trade.purchase_units,
-      open_at: trade.invested_date.toString(),
+      open_at: moment(trade.invested_date).format("YYYY-MM-DD HH:mm"),
     };
     profloss += trade.trade;
     let adminProfit = profloss * 0.015;
