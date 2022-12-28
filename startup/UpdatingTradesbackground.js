@@ -13,14 +13,15 @@ module.exports = async () => {
     console.log("in function");
     const active_trades = await Active_Trade.findAll();
     // console.log(data);
+
     if (data.length === 0) return console.log("returned from data");
     if (active_trades.length > 0) {
       active_trades.forEach((x) => {
         const { crypto_name, purchase_units, take_profit, stop_loss } = x;
         data.forEach((i) => {
-          console.log("looping data");
+          // console.log("looping data");
           if (i.name === crypto_name) {
-            console.log("condition true--");
+            // console.log("condition true--");
             let price = i.price;
             // console.log(price);
             let val = price * purchase_units;

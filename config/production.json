@@ -1,7 +1,11 @@
 {
+  "en":"production",
     "DBCONFIG": {
-        "USERNAME": "root",
-        "DATABASE":"prime_crypto"
+      "USERNAME": "freedb_sulaiman",
+      "DATABASE":"freedb_prime_crypto",
+      "PASSWORD":"a2USGaabb8#pUH7",
+      "HOST": "sql.freedb.tech",
+      "PORT": 3306
       },
       "mail":{
         "auth":{}

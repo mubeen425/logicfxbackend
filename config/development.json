@@ -1,4 +1,5 @@
 {
+  "en":"dev",
     "DBCONFIG": {
         "USERNAME": "root",
         "DATABASE":"prime_crypto",
