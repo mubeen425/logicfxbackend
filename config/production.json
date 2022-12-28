@@ -9,7 +9,6 @@
       },
       "mail":{
         "service":"Gmail",
-        "port":465,
         "auth": {
           "user": "sulaimanfarooqi526@gmail.com",
           "pass": "kwqwpixxcuoiptgg"
