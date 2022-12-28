@@ -8,6 +8,8 @@
       "PORT": 3306
       },
       "mail":{
+        "host": "smtp.example.com",
+        "port": 587,
         "service": "gmail",
         "auth": {
           "user": "sulaimanfarooqi526@gmail.com",

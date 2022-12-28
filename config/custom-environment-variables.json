@@ -7,6 +7,8 @@
         "DATABASE":"db_name"
       },
       "mail":{
+        "host": "mail_host",
+        "port": "mail_port",
         "service": "mail_service",
         "auth": {
           "user": "mail_user_account",
@@ -14,5 +16,6 @@
         }
       },
       "MarketApi":"market_api",
-      "jwtPrivateKey":"jwt_key"
+      "jwtPrivateKey":"jwt_key",
+      "baseurl":"base_url"
     }
