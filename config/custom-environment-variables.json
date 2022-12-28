@@ -1,6 +1,16 @@
 {
     "DBCONFIG": {
-        "PASSWORD": "db_password"
+        "PASSWORD": "db_password",
+        "HOST":"db_host",
+        "PORT":"db_port"
       },
+      "mail":{
+        "service": "mail_service",
+        "auth": {
+          "user": "mail_user_account",
+          "pass": "mail_user_pass"
+        }
+      },
+      "MarketApi":"market_api",
       "jwtPrivateKey":"jwt_key"
     }

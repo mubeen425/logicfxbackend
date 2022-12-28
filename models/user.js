@@ -3,6 +3,7 @@ const { DataTypes } = require("sequelize");
 const moment = require("moment");
 const jwt = require("jsonwebtoken");
 const Joi = require("joi");
+const config = require("config");
 const User = connection.define(
   "user",
   {
@@ -80,8 +81,8 @@ User.prototype.generateJwtToken = function () {
       is_active: this.is_active_user,
       is_email_verified: this.is_email_verified,
     },
-    "privateKey"
-    // { expiresIn: "1d" }
+    config.get("jwtPrivateKey") || config.get("defaultjwtPrivateKey")
+    // { expiresIn: 86400 }
   );
 };
 
@@ -90,7 +91,7 @@ function validate(req) {
     user_name: Joi.string().required().min(5).max(255),
     first_name: Joi.string().required(),
     last_name: Joi.string().required(),
-    email: Joi.string().min(5).max(255).required().email(),
+    email: Joi.string().required().email(),
     password: Joi.string()
       .min(5)
       .max(255)

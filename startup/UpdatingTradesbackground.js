@@ -43,9 +43,9 @@ module.exports = async () => {
 };
 
 const getCoinMarketData = async () => {
-  return await axios
-    .get(config.get("marketApi"))
-    .catch((error) => console.log(error));
+  let url = config.get("MarketApi");
+  console.log(url);
+  return await axios.get(url).catch((error) => console.log(error));
 };
 
 const filterWithAdminWatchlist = async (coins) => {
@@ -115,8 +115,10 @@ const filterWithAdminWatchlist = async (coins) => {
 
 const deleteTrade = async (id, price) => {
   console.log(id, price);
+  let url = config.get("baseurl");
+  console.log(url);
   return await axios
-    .delete(`${config.get("baseurl")}/api/activetrade/` + id, {
+    .delete(`${url}/api/activetrade/` + id, {
       data: {
         crypto_sale_price: price,
       },

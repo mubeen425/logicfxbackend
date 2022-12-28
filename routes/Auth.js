@@ -3,6 +3,9 @@ const router = express.Router();
 const { User, validate } = require("../models/user");
 const { ENCRYPT_PASSWORD, COMPARE_PASSWORD } = require("../utils/constants");
 const { Wallet } = require("../models/wallet");
+const sendMail = require("../utils/mailsend");
+const config = require("config");
+const jwt = require("jsonwebtoken");
 
 router.post("/register", async (req, res) => {
   try {
@@ -12,6 +15,7 @@ router.post("/register", async (req, res) => {
     let checkUsername = await User.findOne({
       where: { user_name: req.body.user_name },
     });
+
     if (checkUsername)
       return res.status(400).send("User Name is already taken.");
 
@@ -20,12 +24,19 @@ router.post("/register", async (req, res) => {
       return res.status(400).send("User already registered with this gmail.");
 
     req.body.password = await ENCRYPT_PASSWORD(req.body.password);
-    createUser = await User.create(req.body);
 
-    await Wallet.create({ user_id: createUser.id });
+    let verifyToken = jwt.sign(req.body, config.get("jwtPrivateKey"));
 
-    const token = createUser.generateJwtToken();
-    res.header("x-auth-token", token).send({ status: true });
+    sendMail(
+      req.body.email,
+      "Email Verification",
+      "Please Verify Your Email by clicking the button below.",
+      verifyToken
+    );
+
+    return res.send({
+      message: "Verification email is sent please verify your account.",
+    });
   } catch (error) {
     return res.send(error.message);
   }
@@ -47,6 +58,42 @@ router.post("/login", async (req, res) => {
     return res.send({ status: true, access: token });
   } catch (error) {
     return res.send(error.message);
+  }
+});
+
+router.get("/verify/:token", async (req, res) => {
+  try {
+    if (!req.params.token) return res.send("Token is missing.");
+
+    const userDecode = jwt.verify(
+      req.params.token,
+      config.get("jwtPrivateKey")
+    );
+
+    userDecode.is_email_verified = true;
+
+    let user = await User.findOne({ where: { email: userDecode.email } });
+    if (user) {
+      if (!user.is_email_verified) {
+        user.is_email_verified = true;
+        await user.save();
+      }
+      return res.status(400).send("<h1>Already Verified.</h1>");
+    } else {
+      createUser = await User.create(userDecode);
+      await Wallet.create({ user_id: createUser.id });
+    }
+
+    return res.render("emailconfirm", {
+      title: "Verified.",
+      status: "Email Verified.",
+    });
+  } catch (error) {
+    console.log(error.message);
+    return res.render("emailconfirm", {
+      title: "Expired",
+      status: "Token expired",
+    });
   }
 });
 

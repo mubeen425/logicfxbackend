@@ -89,7 +89,7 @@ router.post("/partial", IsAdminOrUser, async (req, res) => {
       open_trade: trade.trade,
       partial_user_value: parseFloat(partial_trade_close_amount),
       purchase_units: remainingTrade / trade.crypto_purchase_price,
-      open_at: trade.invested_at,
+      open_at: trade.invested_date.toString(),
       trade_type: req.body.trade_type,
     };
 
@@ -127,7 +127,7 @@ router.post("/partial", IsAdminOrUser, async (req, res) => {
 
 router.delete("/:id", async (req, res) => {
   try {
-    console.log(req.body.crypto_sale_price);
+    // console.log(req.body.crypto_sale_price);
 
     if (!req.params.id || !req.body.crypto_sale_price)
       return res.status(400).send("Trede id or sale price is missing.");
@@ -147,7 +147,7 @@ router.delete("/:id", async (req, res) => {
       investment: trade.investment,
       open_trade: trade.trade,
       purchase_units: trade.purchase_units,
-      open_at: trade.invested_at,
+      open_at: trade.invested_date.toString(),
     };
     profloss += trade.trade;
     let adminProfit = profloss * 0.015;

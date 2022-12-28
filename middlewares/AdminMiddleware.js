@@ -8,9 +8,9 @@ module.exports = function (req, res, next) {
     if (decodetoken.is_admin) {
       next();
     } else {
-      return res.status(404).send("Invalid Token.");
+      return res.status(400).send("Invalid Token.");
     }
   } catch (error) {
-    return res.status(404).send("Invalid token");
+    return res.status(400).send("Invalid token");
   }
 };
