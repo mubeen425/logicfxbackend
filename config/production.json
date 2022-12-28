@@ -8,8 +8,8 @@
       "PORT": 3306
       },
       "mail":{
-        "secure":true,
-        "service":"SendPulse",
+        "service":"Gmail",
+        "port":465,
         "auth": {
           "user": "sulaimanfarooqi526@gmail.com",
           "pass": "kwqwpixxcuoiptgg"
