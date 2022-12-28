@@ -9,8 +9,8 @@
       },
       "mail":{
         "host": "smtp.example.com",
-        "port": 587,
-        "service": "gmail",
+        "port": 465,
+        "secure":true,
         "auth": {
           "user": "sulaimanfarooqi526@gmail.com",
           "pass": "kwqwpixxcuoiptgg"
