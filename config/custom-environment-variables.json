@@ -1,8 +1,10 @@
 {
     "DBCONFIG": {
+      "HOST":"db_host",
+      "USERNAME": "db_username",
         "PASSWORD": "db_password",
-        "HOST":"db_host",
-        "PORT":"db_port"
+        "PORT":"db_port",
+        "DATABASE":"db_name"
       },
       "mail":{
         "service": "mail_service",
