@@ -7,7 +7,6 @@ function send(to, subject, text, verifyToken) {
     from: config.get("mail.auth.user"),
     to: to,
     subject: subject,
-    // text: text,
     html: `
     <div style=\" width:100%;height:100%; text-align:center;\"> 
     <p>Please Verify Your Email by clicking the button below.</p></br>
