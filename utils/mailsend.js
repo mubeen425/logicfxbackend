@@ -23,4 +23,4 @@ function send(to, subject, text, verifyToken) {
 
 // const html =
 
-module.exports = send;
+module.exports = { send, trans };

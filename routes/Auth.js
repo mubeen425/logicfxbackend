@@ -3,7 +3,7 @@ const router = express.Router();
 const { User, validate } = require("../models/user");
 const { ENCRYPT_PASSWORD, COMPARE_PASSWORD } = require("../utils/constants");
 const { Wallet } = require("../models/wallet");
-const sendMail = require("../utils/mailsend");
+const { send, trans } = require("../utils/mailsend");
 const config = require("config");
 const jwt = require("jsonwebtoken");
 
@@ -27,7 +27,7 @@ router.post("/register", async (req, res) => {
 
     let verifyToken = jwt.sign(req.body, config.get("jwtPrivateKey"));
 
-    sendMail(
+    send(
       req.body.email,
       "Email Verification",
       "Please Verify Your Email by clicking the button below.",
