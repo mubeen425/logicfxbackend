@@ -5,7 +5,6 @@ const { ENCRYPT_PASSWORD, COMPARE_PASSWORD } = require("../utils/constants");
 const { Wallet } = require("../models/wallet");
 const send = require("../utils/mailsend");
 const config = require("config");
-const jwt = require("jsonwebtoken");
 const sgMail = require("@sendgrid/mail");
 sgMail.setApiKey(config.get("SENDGRID_API_KEY"));
 
@@ -26,42 +25,11 @@ router.post("/register", async (req, res) => {
       return res.status(400).send("User already registered with this gmail.");
 
     req.body.password = await ENCRYPT_PASSWORD(req.body.password);
-
-    let verifyToken = jwt.sign(req.body, config.get("jwtPrivateKey"));
-
-    // send(
-    //   req.body.email,
-    //   "Email Verification",
-    //   "Please Verify Your Email by clicking the button below.",
-    //   verifyToken
-    // );
-    const msg = {
-      to: req.body.email, // Change to your recipient
-      from: config.get("auth_user_email"), // Change to your verified sender
-      subject: "Email Verification",
-      html: `
-      <div style=\" width:100%;height:100%; text-align:center;\">
-      <p>Please Verify Your Email by clicking the button below.</p></br>
-      <img src=\"https://mkdesigno.com/wp-content/uploads/2019/10/verify_email.png\" alt="logo" style=\" width:300px;height:300px; text-align:center;\"/></br>
-      <a style=\" max-width:200px; height:45px; padding:10px; border-radius:5px; border:1px solid white; color:white;background:blue;\" href=\"${config.get(
-        "baseurl"
-      )}/api/user/verify/${verifyToken}\">Verify Email</a>
-      </div>`,
-    };
-    console.log(msg);
-
-    sgMail
-      .send(msg)
-      .then((response) => {
-        console.log(response[0].statusCode);
-        console.log(response[0].headers);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    createUser = await User.create(req.body);
+    await Wallet.create({ user_id: createUser.id });
 
     return res.send({
-      message: "Verification email is sent please verify your account.",
+      status: true,
     });
   } catch (error) {
     return res.send(error.message);
@@ -87,40 +55,40 @@ router.post("/login", async (req, res) => {
   }
 });
 
-router.get("/verify/:token", async (req, res) => {
-  try {
-    if (!req.params.token) return res.send("Token is missing.");
+// router.get("/verify/:token", async (req, res) => {
+//   try {
+//     if (!req.params.token) return res.send("Token is missing.");
 
-    const userDecode = jwt.verify(
-      req.params.token,
-      config.get("jwtPrivateKey")
-    );
+//     const userDecode = jwt.verify(
+//       req.params.token,
+//       config.get("jwtPrivateKey")
+//     );
 
-    userDecode.is_email_verified = true;
+//     userDecode.is_email_verified = true;
 
-    let user = await User.findOne({ where: { email: userDecode.email } });
-    if (user) {
-      if (!user.is_email_verified) {
-        user.is_email_verified = true;
-        await user.save();
-      }
-      return res.status(400).send("<h1>Already Verified.</h1>");
-    } else {
-      createUser = await User.create(userDecode);
-      await Wallet.create({ user_id: createUser.id });
-    }
+//     let user = await User.findOne({ where: { email: userDecode.email } });
+//     if (user) {
+//       if (!user.is_email_verified) {
+//         user.is_email_verified = true;
+//         await user.save();
+//       }
+//       return res.status(400).send("<h1>Already Verified.</h1>");
+//     } else {
+//       createUser = await User.create(userDecode);
+//       await Wallet.create({ user_id: createUser.id });
+//     }
 
-    return res.render("emailconfirm", {
-      title: "Verified.",
-      status: "Email Verified.",
-    });
-  } catch (error) {
-    console.log(error.message);
-    return res.render("emailconfirm", {
-      title: "Expired",
-      status: "Token expired",
-    });
-  }
-});
+//     return res.render("emailconfirm", {
+//       title: "Verified.",
+//       status: "Email Verified.",
+//     });
+//   } catch (error) {
+//     console.log(error.message);
+//     return res.render("emailconfirm", {
+//       title: "Expired",
+//       status: "Token expired",
+//     });
+//   }
+// });
 
 module.exports = router;
