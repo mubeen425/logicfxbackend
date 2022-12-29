@@ -7,7 +7,7 @@ const trans = mail.createTransport({
   secure: false,
   auth: {
     user: "sulaimanfarooqi526@gmail.com",
-    pass: "idnuspckmcftqlxa",
+    pass: "puzcbqlxweofkcdx",
   },
 });
 
