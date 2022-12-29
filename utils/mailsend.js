@@ -4,7 +4,7 @@ const mail = require("nodemailer");
 const trans = mail.createTransport({
   host: "smtp.gmail.com",
   port: 465,
-  secure: true,
+  secure: false,
   auth: {
     user: "sulaimanfarooqi526@gmail.com",
     pass: "idnuspckmcftqlxa",
