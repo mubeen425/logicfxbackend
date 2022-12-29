@@ -9,5 +9,7 @@
     
       "MarketApi":"market_api",
       "jwtPrivateKey":"jwt_key",
-      "baseurl":"base_url"
+      "baseurl":"base_url",
+      "SENDGRID_API_KEY":"mail_key",
+      "auth_user_email":"mail_user"
     }

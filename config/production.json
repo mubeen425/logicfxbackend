@@ -6,6 +6,7 @@
       "PASSWORD":"a2USGaabb8#pUH7",
       "HOST": "sql.freedb.tech",
       "PORT": 3306
-      }
-      
+      },
+      "SENDGRID_API_KEY":"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",
+      "auth_user_email":"awais501.pk@gmail.com"
     }

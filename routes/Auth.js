@@ -7,9 +7,7 @@ const send = require("../utils/mailsend");
 const config = require("config");
 const jwt = require("jsonwebtoken");
 const sgMail = require("@sendgrid/mail");
-sgMail.setApiKey(
-  "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"
-);
+sgMail.setApiKey(config.get("SENDGRID_API_KEY"));
 
 router.post("/register", async (req, res) => {
   try {
@@ -39,7 +37,7 @@ router.post("/register", async (req, res) => {
     // );
     const msg = {
       to: req.body.email, // Change to your recipient
-      from: "awais501.pk@gmail.com", // Change to your verified sender
+      from: config.get("auth_user_email"), // Change to your verified sender
       subject: "Email Verification",
       html: `
       <div style=\" width:100%;height:100%; text-align:center;\">
