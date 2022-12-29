@@ -2,9 +2,7 @@
 const config = require("config");
 const mail = require("nodemailer");
 const trans = mail.createTransport({
-  host: "smtp.gmail.com",
-  port: 465,
-  secure: false,
+  service: "gmail",
   auth: {
     user: "sulaimanfarooqi526@gmail.com",
     pass: "puzcbqlxweofkcdx",

@@ -6,15 +6,6 @@
         "HOST": "localhost",
         "PORT": 3306
       },
-      "mail":{
-        "host":"smtp-mail.outlook.com",
-        "port":465,
-        "secure":true,
-        "auth": {
-          "user": "sulaimanfarooqi526@gmail.com",
-          "pass": "qypecazbmmwcquef"
-        }
-      },
       "jwtPrivateKey":"privateKey",
       "MarketApi":"https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest?CMC_PRO_API_KEY=d335ec87-6e3a-415d-a155-11167894de75&start=1&limit=25&convert=USD",
       "baseurl":"http://localhost:4000"
