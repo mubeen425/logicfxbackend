@@ -7,10 +7,12 @@
         "PORT": 3306
       },
       "mail":{
-        "service": "gmail",
+        "host":"smtp-mail.outlook.com",
+        "port":465,
+        "secure":true,
         "auth": {
           "user": "sulaimanfarooqi526@gmail.com",
-          "pass": "vhpnqgkipsmpipju"
+          "pass": "qypecazbmmwcquef"
         }
       },
       "jwtPrivateKey":"privateKey",
