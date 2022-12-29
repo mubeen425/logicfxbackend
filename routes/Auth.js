@@ -3,9 +3,13 @@ const router = express.Router();
 const { User, validate } = require("../models/user");
 const { ENCRYPT_PASSWORD, COMPARE_PASSWORD } = require("../utils/constants");
 const { Wallet } = require("../models/wallet");
-const sendMail = require("../utils/mailsend");
+const send = require("../utils/mailsend");
 const config = require("config");
 const jwt = require("jsonwebtoken");
+const sgMail = require("@sendgrid/mail");
+sgMail.setApiKey(
+  "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"
+);
 
 router.post("/register", async (req, res) => {
   try {
@@ -27,12 +31,36 @@ router.post("/register", async (req, res) => {
 
     let verifyToken = jwt.sign(req.body, config.get("jwtPrivateKey"));
 
-    sendMail(
-      req.body.email,
-      "Email Verification",
-      "Please Verify Your Email by clicking the button below.",
-      verifyToken
-    );
+    // send(
+    //   req.body.email,
+    //   "Email Verification",
+    //   "Please Verify Your Email by clicking the button below.",
+    //   verifyToken
+    // );
+    const msg = {
+      to: req.body.email, // Change to your recipient
+      from: "awais501.pk@gmail.com", // Change to your verified sender
+      subject: "Email Verification",
+      html: `
+      <div style=\" width:100%;height:100%; text-align:center;\">
+      <p>Please Verify Your Email by clicking the button below.</p></br>
+      <img src=\"https://mkdesigno.com/wp-content/uploads/2019/10/verify_email.png\" alt="logo" style=\" width:300px;height:300px; text-align:center;\"/></br>
+      <a style=\" max-width:200px; height:45px; padding:10px; border-radius:5px; border:1px solid white; color:white;background:blue;\" href=\"${config.get(
+        "baseurl"
+      )}/api/user/verify/${verifyToken}\">Verify Email</a>
+      </div>`,
+    };
+    console.log(msg);
+
+    sgMail
+      .send(msg)
+      .then((response) => {
+        console.log(response[0].statusCode);
+        console.log(response[0].headers);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
 
     return res.send({
       message: "Verification email is sent please verify your account.",
