@@ -16,6 +16,9 @@ module.exports = function (app) {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
   app.use(morgan("tiny"));
+  app.get("/", async (req, res) => {
+    res.send("working");
+  });
   app.use("/api/user", authRouter);
   app.use("/api/deposit", depositRouter);
   app.use("/api/withdraw", withdrawRouter);
