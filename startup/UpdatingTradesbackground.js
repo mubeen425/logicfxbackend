@@ -25,10 +25,11 @@ module.exports = async () => {
             let price = i.price;
             // console.log(price);
             let val = price * purchase_units;
-            if (val >= take_profit + x.trade) {
+
+            if (val >= take_profit + x.trade && take_profit !== 0) {
               console.log("in profit");
               deleteTrade(x.id, price);
-            } else if (val <= x.trade - stop_loss) {
+            } else if (val <= x.trade - stop_loss && stop_loss !== 0) {
               console.log("in loss");
               deleteTrade(x.id, price);
             }

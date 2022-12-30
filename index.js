@@ -5,7 +5,7 @@ app.set("view engine", "pug");
 
 require("./startup/routes")(app);
 require("./startup/db")();
-const port = process.env.PORT || 4000;
+const port = process.env.PORT || 8000;
 app.listen(port, () => {
   console.log("listening on port " + port);
 });
