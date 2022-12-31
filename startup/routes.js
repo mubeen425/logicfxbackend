@@ -11,8 +11,13 @@ const activeTradeRouter = require("../routes/Active_Trades");
 const activeTradeHistory = require("../routes/trade_history");
 const coinMarketRouter = require("../routes/coin_market");
 
+var corsOptions = {
+  origin: "*",
+  optionsSuccessStatus: 200,
+};
+
 module.exports = function (app) {
-  app.use(cors());
+  app.use(cors(corsOptions));
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
   app.use(morgan("tiny"));
