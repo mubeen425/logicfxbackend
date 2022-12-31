@@ -14,7 +14,7 @@ const Wallet = connection.define(
     },
     balance: {
       type: DataTypes.FLOAT,
-      defaultValue: 1000.0,
+      defaultValue: 0,
     },
     created_at: {
       type: DataTypes.DATE,
