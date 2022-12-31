@@ -99,8 +99,7 @@ router.post("/partial", IsAdminOrUser, async (req, res) => {
       (partial_trade_close_amount / trade.crypto_purchase_price);
 
     profloss += partial_trade_close_amount;
-    let adminProfit = profloss * 0.015;
-    profloss -= adminProfit;
+
     let actualprofloss = profloss - partial_trade_close_amount;
     if (actualprofloss > 0) {
       history.actual_profit = actualprofloss;
@@ -109,6 +108,8 @@ router.post("/partial", IsAdminOrUser, async (req, res) => {
       history.actual_loss = actualprofloss;
       history.actual_profit = 0;
     }
+    let adminProfit = profloss * 0.015;
+    profloss -= adminProfit;
     wallet.balance += profloss;
     history.close_trade = profloss;
     history.open_admin_profit = trade.admin_profit;
@@ -151,8 +152,7 @@ router.delete("/:id", async (req, res) => {
       open_at: moment(trade.invested_date).format("YYYY-MM-DD HH:mm"),
     };
     profloss += trade.trade;
-    let adminProfit = profloss * 0.015;
-    profloss -= adminProfit;
+
     let actualprofloss = profloss - trade.trade;
     if (actualprofloss > 0) {
       history.actual_profit = actualprofloss;
@@ -162,6 +162,8 @@ router.delete("/:id", async (req, res) => {
       history.actual_loss = actualprofloss;
       history.actual_profit = 0;
     }
+    let adminProfit = profloss * 0.015;
+    profloss -= adminProfit;
     wallet.balance += profloss;
     history.close_trade = profloss;
     history.open_admin_profit = trade.admin_profit;
