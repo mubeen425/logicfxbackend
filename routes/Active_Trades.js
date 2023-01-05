@@ -71,6 +71,12 @@ router.post("/partial", IsAdminOrUser, async (req, res) => {
 
     const { partial_trade_close_amount } = req.body;
 
+    if (
+      parseFloat(partial_trade_close_amount) > trade.trade ||
+      parseFloat(partial_trade_close_amount) <= 0
+    )
+      return res.status(400).send("Invalid partial trade close amount.");
+
     if (!trade) return res.status(404).send("Trade not Found");
     const wallet = await Wallet.findOne({ where: { user_id: trade.user_id } });
 
