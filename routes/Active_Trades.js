@@ -133,6 +133,28 @@ router.post("/partial", IsAdminOrUser, async (req, res) => {
   }
 });
 
+router.put("/:id", async (req, res) => {
+  try {
+    if (!req.params.id) return res.status(400).send("Id is required.");
+    if (!req.body.take_profit || !req.body.stop_loss)
+      return res.status(400).send("Check Take Profit And Stop Loss.");
+
+    const checkTrade = await Active_Trade.findOne({
+      where: { id: req.params.id },
+    });
+    if (!checkTrade)
+      return res.status(404).send("No Trade Found With This ID.");
+
+    checkTrade.take_profit = parseFloat(req.body.take_profit);
+    checkTrade.stop_loss = parseFloat(req.body.stop_loss);
+
+    checkTrade.save();
+    return res.send("Updated");
+  } catch (error) {
+    return res.send(error.message);
+  }
+});
+
 router.delete("/:id", async (req, res) => {
   try {
     // console.log(req.body.crypto_sale_price);

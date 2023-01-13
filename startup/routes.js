@@ -10,6 +10,8 @@ const adminWatchlistRouter = require("../routes/admin_watchlist");
 const activeTradeRouter = require("../routes/Active_Trades");
 const activeTradeHistory = require("../routes/trade_history");
 const coinMarketRouter = require("../routes/coin_market");
+const profileUpdateRouter = require("../routes/user_update");
+const adminNotifyRouter = require("../routes/notifications");
 
 var corsOptions = {
   origin: "*",
@@ -33,4 +35,6 @@ module.exports = function (app) {
   app.use("/api/activetrade", activeTradeRouter);
   app.use("/api/tradehistory", activeTradeHistory);
   app.use("/coinmarket", coinMarketRouter);
+  app.use("/api/profile/", profileUpdateRouter);
+  app.use("/api/admin/notification/", adminNotifyRouter);
 };
