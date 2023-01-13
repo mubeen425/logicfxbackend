@@ -3,9 +3,11 @@ const router = express.Router();
 const { User, validate } = require("../models/user");
 const { ENCRYPT_PASSWORD, COMPARE_PASSWORD } = require("../utils/constants");
 const { Wallet } = require("../models/wallet");
+const IsAdminOrUser = require("../middlewares/AuthMiddleware");
 const send = require("../utils/mailsend");
 const config = require("config");
 const sgMail = require("@sendgrid/mail");
+const Joi = require("joi");
 sgMail.setApiKey(config.get("SENDGRID_API_KEY"));
 
 router.post("/register", async (req, res) => {
@@ -55,6 +57,40 @@ router.post("/login", async (req, res) => {
   }
 });
 
+router.post("/email-verify", async (req, res) => {
+  try {
+    if (!req.body.email) return res.status(400).send("please provide email.");
+
+    const checkUser = await User.findOne({ where: { email: req.body.email } });
+    if (!checkUser)
+      return res.status(404).send("User Not Found With The Email.");
+
+    return res.send({ id: checkUser.id });
+  } catch (error) {
+    return res.send(error.message);
+  }
+});
+
+router.put("/passwordreset/:user_id", async (req, res) => {
+  try {
+    if (!req.params.user_id) return res.status(400).send("user id is missing.");
+    const { error } = passValidate(req.body);
+    if (error) return res.status(400).send(error.details[0].message);
+
+    const checkUser = await User.findOne({ where: { id: req.params.user_id } });
+    if (!checkUser)
+      return res.status(404).send("User Not Found With The Given Id.");
+
+    const newPassword = await ENCRYPT_PASSWORD(req.body.password);
+    checkUser.password = newPassword;
+    await checkUser.save();
+
+    return res.send("Password Updated.");
+  } catch (error) {
+    return res.send(error.message);
+  }
+});
+
 // router.get("/verify/:token", async (req, res) => {
 //   try {
 //     if (!req.params.token) return res.send("Token is missing.");
@@ -91,4 +127,31 @@ router.post("/login", async (req, res) => {
 //   }
 // });
 
+router.get("/getall", IsAdminOrUser, async (req, res) => {
+  try {
+    const users = await User.findAll();
+    if (!users.length > 0) return res.send({ message: "no users found" });
+
+    return res.send(users);
+  } catch (error) {
+    return res.send(error.message);
+  }
+});
+
+const passValidate = (req) => {
+  const schema = Joi.object({
+    password: Joi.string()
+      .min(5)
+      .max(255)
+      .required()
+      .regex(
+        RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})")
+      )
+      .message(
+        "Password must contain at least one uppercase one lowercase one special character and one number "
+      ),
+  });
+
+  return schema.validate(req);
+};
 module.exports = router;
