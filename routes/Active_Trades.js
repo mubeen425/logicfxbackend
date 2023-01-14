@@ -133,11 +133,11 @@ router.post("/partial", IsAdminOrUser, async (req, res) => {
   }
 });
 
-router.put("/:id", async (req, res) => {
+router.put("/:id", IsAdminOrUser, async (req, res) => {
   try {
     if (!req.params.id) return res.status(400).send("Id is required.");
-    if (!req.body.take_profit || !req.body.stop_loss)
-      return res.status(400).send("Check Take Profit And Stop Loss.");
+    const { error } = validatetradeupdate(req.body);
+    if (error) return res.status(400).send(error.details[0].message);
 
     const checkTrade = await Active_Trade.findOne({
       where: { id: req.params.id },
@@ -214,6 +214,15 @@ const partialTradeValidate = (req) => {
     partial_trade_close_amount: Joi.required(),
     crypto_sale_price: Joi.number().required(),
     trade_type: Joi.string().required(),
+  });
+
+  return schema.validate(req);
+};
+
+const validatetradeupdate = (req) => {
+  const schema = Joi.object({
+    take_profit: Joi.number().required(),
+    stop_loss: Joi.number().required(),
   });
 
   return schema.validate(req);
