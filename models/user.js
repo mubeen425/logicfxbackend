@@ -75,6 +75,9 @@ User.prototype.generateJwtToken = function () {
     {
       id: this.id,
       username: this.user_name,
+      firstname: this.first_name,
+      lastname: this.last_name,
+      contact: this.contact,
       email: this.email,
       avatar: this.avatar,
       is_admin: this.is_admin,
