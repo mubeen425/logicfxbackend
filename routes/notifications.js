@@ -42,9 +42,7 @@ router.put("/:id", async (req, res) => {
 
     checkNotification.forEach((noti) => {
       if (noti.status) {
-        console.log("in", noti.status);
         let st = noti.status.split(",");
-        console.log(st);
         let exist = false;
         st.forEach((t) => {
           if (parseInt(t) === parseInt(req.params.id)) {
@@ -55,10 +53,8 @@ router.put("/:id", async (req, res) => {
           st.push(`${req.params.id}`);
         }
         noti.status = st.toString();
-        console.log(noti.status);
       } else {
         noti.status = `${req.params.id}`;
-        console.log("f", noti.status);
       }
       noti.save();
     });
