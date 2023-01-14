@@ -15,8 +15,7 @@ const Notifications = connection.define(
       type: DataTypes.TEXT,
     },
     status: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: false,
+      type: DataTypes.STRING,
     },
     created_at: {
       type: DataTypes.DATE,

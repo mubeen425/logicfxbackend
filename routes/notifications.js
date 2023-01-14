@@ -35,18 +35,33 @@ router.put("/:id", async (req, res) => {
   try {
     if (!req.params.id)
       return res.status(400).send("Please Provide Id To Update The Record.");
-    if (!req.body.status)
-      return res.status(400).send("Please Provide Status To Update.");
 
-    const checkNotification = await Notifications.findOne({
-      where: { id: req.params.id },
+    const checkNotification = await Notifications.findAll();
+    if (!checkNotification.length > 0)
+      return res.status(404).send("Notifications Not Found.");
+
+    checkNotification.forEach((noti) => {
+      if (noti.status) {
+        console.log("in", noti.status);
+        let st = noti.status.split(",");
+        console.log(st);
+        let exist = false;
+        st.forEach((t) => {
+          if (parseInt(t) === parseInt(req.params.id)) {
+            exist = true;
+          }
+        });
+        if (!exist) {
+          st.push(`${req.params.id}`);
+        }
+        noti.status = st.toString();
+        console.log(noti.status);
+      } else {
+        noti.status = `${req.params.id}`;
+        console.log("f", noti.status);
+      }
+      noti.save();
     });
-    if (!checkNotification)
-      return res.status(404).send("Notification Not Found.");
-
-    checkNotification.status = req.body.status;
-    await checkNotification.save();
-
     return res.send("status updated.");
   } catch (error) {
     return res.send(error.message);
