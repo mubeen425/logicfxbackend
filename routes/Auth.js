@@ -138,6 +138,19 @@ router.get("/getall", IsAdminOrUser, async (req, res) => {
   }
 });
 
+router.get("/:user_id", IsAdminOrUser, async (req, res) => {
+  try {
+    if (!req.params.user_id)
+      return res.status(400).send("user id is required.");
+    const user = await User.findOne({ where: { id: req.params.user_id } });
+    if (!user) return res.status(404).send("no users found");
+
+    return res.send(user);
+  } catch (error) {
+    return res.send(error.message);
+  }
+});
+
 const passValidate = (req) => {
   const schema = Joi.object({
     password: Joi.string()
