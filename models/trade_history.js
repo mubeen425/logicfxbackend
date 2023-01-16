@@ -25,6 +25,9 @@ const Trade_History = connection.define(
     crypto_name: {
       type: DataTypes.STRING,
     },
+    crypto_symbol: {
+      type: DataTypes.STRING,
+    },
     crypto_purchase_price: {
       type: DataTypes.FLOAT,
     },
