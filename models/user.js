@@ -84,8 +84,8 @@ User.prototype.generateJwtToken = function () {
       is_active: this.is_active_user,
       is_email_verified: this.is_email_verified,
     },
-    config.get("jwtPrivateKey") || config.get("defaultjwtPrivateKey")
-    // { expiresIn: 86400 }
+    config.get("jwtPrivateKey") || config.get("defaultjwtPrivateKey"),
+    { expiresIn: "1h"}
   );
 };
 
