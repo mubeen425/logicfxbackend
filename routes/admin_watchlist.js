@@ -9,10 +9,6 @@ router.use(IsAdmin);
 router.get("/", async (req, res) => {
   try {
     const watchlist = await Admin_Watchlist.findAll();
-    if (!watchlist.length > 0)
-      return res.send({
-        message: "You haven't added any thing in the watchlist",
-      });
 
     res.status(200).send(watchlist);
   } catch (error) {

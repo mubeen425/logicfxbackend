@@ -13,8 +13,6 @@ router.get("/:user_id", async (req, res) => {
     const watchlist = await User_Watchlist.findAll({
       where: { user_id: req.params.user_id },
     });
-    if (!watchlist.length > 0)
-      return res.send({ message: "Not found any watchlist related this user" });
 
     return res.status(200).send(watchlist);
   } catch (error) {

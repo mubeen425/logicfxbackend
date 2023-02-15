@@ -16,8 +16,6 @@ router.get("/:user_id", IsAdminOrUser, async (req, res) => {
     const getTrades = await Active_Trade.findAll({
       where: { user_id: req.params.user_id },
     });
-    if (!getTrades.length > 0)
-      return res.send({ message: "NO Active Trades Found" });
 
     return res.send(getTrades);
   } catch (error) {

@@ -130,7 +130,6 @@ router.put("/passwordreset/:user_id", async (req, res) => {
 router.get("/getall", IsAdminOrUser, async (req, res) => {
   try {
     const users = await User.findAll();
-    if (!users.length > 0) return res.send({ message: "no users found" });
 
     return res.send(users);
   } catch (error) {

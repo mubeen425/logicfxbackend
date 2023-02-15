@@ -9,8 +9,6 @@ router.get("/:user_id", async (req, res) => {
     const findHistoryUserId = await Trade_History.findAll({
       where: { user_id: req.params.user_id },
     });
-    if (!findHistoryUserId.length > 0)
-      return res.send({ message: "History not found" });
     return res.send(findHistoryUserId);
   } catch (error) {
     return res.send(error.message);
