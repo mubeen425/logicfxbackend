@@ -5,10 +5,7 @@ const { ENCRYPT_PASSWORD, COMPARE_PASSWORD } = require("../utils/constants");
 const { Wallet } = require("../models/wallet");
 const IsAdminOrUser = require("../middlewares/AuthMiddleware");
 const send = require("../utils/mailsend");
-const config = require("config");
-const sgMail = require("@sendgrid/mail");
 const Joi = require("joi");
-sgMail.setApiKey(config.get("SENDGRID_API_KEY"));
 
 router.post("/register", async (req, res) => {
   try {
