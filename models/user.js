@@ -37,6 +37,9 @@ const User = connection.define(
         notNull: { msg: "lastName is required" },
       },
     },
+    contact:{
+      type:DataTypes.STRING,
+    },
     email: {
       type: DataTypes.STRING,
     },
@@ -95,6 +98,7 @@ function validate(req) {
     first_name: Joi.string().required(),
     last_name: Joi.string().required(),
     email: Joi.string().required().email(),
+    contact: Joi.string().optional(),
     password: Joi.string()
       .min(5)
       .max(255)

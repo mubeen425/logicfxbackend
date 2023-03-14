@@ -108,8 +108,8 @@ function validateFieldsToUpdate(req) {
     user_name: Joi.string().required().min(5).max(255),
     first_name: Joi.string().required(),
     last_name: Joi.string().required(),
-    contact: Joi.string().required(),
     email: Joi.string().email().required(),
+    contact: Joi.string().optional(),
   });
 
   return schema.validate(req);
