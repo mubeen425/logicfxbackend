@@ -77,9 +77,9 @@ User.prototype.generateJwtToken = function () {
   return jwt.sign(
     {
       id: this.id,
-      username: this.user_name,
-      firstname: this.first_name,
-      lastname: this.last_name,
+      user_name: this.user_name,
+      first_name: this.first_name,
+      last_name: this.last_name,
       contact: this.contact,
       email: this.email,
       avatar: this.avatar,
