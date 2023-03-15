@@ -10,8 +10,6 @@ router.use(IsAdminOrUser);
 router.get("/", async (req, res) => {
   try {
     const notifications = await Notifications.findAll();
-    if (!notifications.length > 0)
-      return res.send({ message: "No Notification Record Found." });
 
     return res.status(200).send(notifications);
   } catch (error) {
