@@ -22,6 +22,10 @@ const CoinMarket = connection.define(
     max_supply: DataTypes.FLOAT,
     circulating_supply: DataTypes.FLOAT,
     total_supply: DataTypes.FLOAT,
+    allow:{
+      type:DataTypes.BOOLEAN,
+      defaultValue:true,
+    }
   },
   {
     tableName: "coin_market",

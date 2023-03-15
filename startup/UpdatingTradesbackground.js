@@ -57,9 +57,9 @@ const filterWithAdminWatchlist = async (coins) => {
       console.log(adminwathlist);
       const todeleteCoins = adminwathlist.map((c) => c.coin_name);
       console.log(todeleteCoins);
-      await CoinMarket.destroy({
-        where: { name: { [Op.in]: todeleteCoins } },
-      });
+      // await CoinMarket.destroy({
+      //   where: { name: { [Op.in]: todeleteCoins } },
+      // });
       const extractAndFilterCoinData = coins.map((c) => {
         const {
           price,
@@ -88,8 +88,20 @@ const filterWithAdminWatchlist = async (coins) => {
           total_supply: c.total_supply,
         };
       });
-      const filterOnExtraction = extractAndFilterCoinData.filter(
-        (c) => !todeleteCoins.includes(c.name)
+      const filterOnExtraction = extractAndFilterCoinData.map(
+        (c) => {
+          if(todeleteCoins.includes(c.name)){
+            return {
+              ...c,
+              allow:false,
+            }
+          }else{
+            return {
+              ...c,
+              allow:true,
+            }
+          }
+        }
       );
       await CoinMarket.bulkCreate(filterOnExtraction, {
         updateOnDuplicate: [
@@ -105,6 +117,7 @@ const filterWithAdminWatchlist = async (coins) => {
           "max_supply",
           "circulating_supply",
           "total_supply",
+          "allow"
         ],
       });
 
