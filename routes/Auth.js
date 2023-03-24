@@ -69,10 +69,6 @@ router.post("/accesstoadmin",isAdmin, async (req, res) => {
     let user = await User.findOne({ where: { email: req.body.email } });
     if (!user) return res.status(400).send("Invalid email");
 
-    if(!user.is_email_verified)
-      return res.status(400).send("Account  is not verified.");
-    
-
     const token = user.generateJwtToken();
     return res.send({ status: true, access: token });
   } catch (error) {
