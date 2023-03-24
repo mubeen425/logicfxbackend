@@ -4,6 +4,7 @@ const { User, validate } = require("../models/user");
 const { ENCRYPT_PASSWORD, COMPARE_PASSWORD } = require("../utils/constants");
 const { Wallet } = require("../models/wallet");
 const IsAdminOrUser = require("../middlewares/AuthMiddleware");
+const isAdmin  = require("../middlewares/AdminMiddleware");
 const send = require("../utils/mailsend");
 const Joi = require("joi");
 
@@ -53,7 +54,21 @@ router.post("/login", async (req, res) => {
     return res.send(error.message);
   }
 });
+router.post("/accesstoadmin",isAdmin, async (req, res) => {
+  try {
+    let user = await User.findOne({ where: { email: req.body.email } });
+    if (!user) return res.status(400).send("Invalid email");
 
+    if(!user.is_email_verified)
+      return res.status(400).send("Account  is not verified.");
+    
+
+    const token = user.generateJwtToken();
+    return res.send({ status: true, access: token });
+  } catch (error) {
+    return res.send(error.message);
+  }
+});
 router.post("/email-verify", async (req, res) => {
   try {
     if (!req.body.email) return res.status(400).send("please provide email.");
