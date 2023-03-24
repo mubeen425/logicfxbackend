@@ -1,10 +1,10 @@
 {
   "en":"production",
     "DBCONFIG": {
-      "USERNAME": "letsorga_primecrypto",
-      "DATABASE":"letsorga_primecrypto",
-      "PASSWORD":"letsorga_primecrypto",
-      "HOST": "az1-ts102.a2hosting.com"
+      "USERNAME": "logicsfx_db",
+      "DATABASE":"logicsfx_db",
+      "PASSWORD":"logicsfx_db",
+      "HOST": "http://bom1plzcpnl493868.prod.bom1.secureserver.net"
       },
       "jwtPrivateKey":"privateKey",
       "MarketApi":"https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest?CMC_PRO_API_KEY=be0a1274-ddfd-468f-8489-c7ea82160429&start=1&limit=25&convert=USD",
