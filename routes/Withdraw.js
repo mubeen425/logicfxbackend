@@ -2,13 +2,28 @@ const express = require("express");
 const { Withdraw, validateW } = require("../models/withdraw");
 const { Wallet } = require("../models/wallet");
 const IsAdminOrUser = require("../middlewares/AuthMiddleware");
+const { User } = require("../models/user");
 const router = express.Router();
 
 router.use(IsAdminOrUser);
 
 router.get("/", async (req, res) => {
   try {
-    const getAllRequests = await Withdraw.findAll();
+    const getAllRequests = await Withdraw.findAll({
+      include: [
+        {
+          model: User,
+          as: "user",
+          attributes: [
+            "user_name",
+            "first_name",
+            "last_name",
+            "email",
+            "contact",
+          ],
+        },
+      ],
+    });
     return res.send(getAllRequests);
   } catch (error) {
     return res.send({ message: error.message });
@@ -46,7 +61,7 @@ router.post("/", async (req, res) => {
 
     await Withdraw.create(req.body);
 
-    return res.send("Request Sent successfully");
+    return res.status(200).send("Request Sent successfully");
   } catch (error) {
     return res.send(error.message);
   }

@@ -3,12 +3,38 @@ const moment = require("moment");
 const { Active_Trade, validateAT } = require("../models/active_trades");
 const { Wallet } = require("../models/wallet");
 const Trade_History = require("../models/trade_history");
+const { User } = require("../models/user");
 const IsAdminOrUser = require("../middlewares/AuthMiddleware");
 const router = express.Router();
 
 const Joi = require("joi");
 
 // router.use(IsAdminOrUser);
+
+router.get("/getall", IsAdminOrUser, async (req, res) => {
+  try {
+    const getTrades = await Active_Trade.findAll({
+      include: [
+        {
+          model: User,
+          as: "user",
+          attributes: [
+            "user_name",
+            "first_name",
+            "last_name",
+            "email",
+            "contact",
+          ],
+        },
+      ],
+      order: [['invested_date', 'DESC']]
+    });
+
+    return res.send(getTrades);
+  } catch (error) {
+    return res.send({ message: error.message });
+  }
+});
 
 router.get("/:user_id", IsAdminOrUser, async (req, res) => {
   try {
@@ -70,7 +96,7 @@ router.post("/partial", IsAdminOrUser, async (req, res) => {
     const { partial_trade_close_amount } = req.body;
 
     if (
-      parseFloat(partial_trade_close_amount) > trade.trade ||
+      parseFloat(partial_trade_close_amount) >= trade.trade ||
       parseFloat(partial_trade_close_amount) <= 0
     )
       return res.status(400).send("Invalid partial trade close amount.");

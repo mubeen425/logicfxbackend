@@ -7,7 +7,21 @@ const router = express.Router();
 router.use(IsAdminOrUser);
 router.get("/", async (req, res) => {
   try {
-    const getAllRequests = await Deposit.findAll();
+    const getAllRequests = await Deposit.findAll({
+      include: [
+        {
+          model: User,
+          as: "user",
+          attributes: [
+            "user_name",
+            "first_name",
+            "last_name",
+            "email",
+            "contact",
+          ],
+        },
+      ],
+    });
     return res.send(getAllRequests);
   } catch (error) {
     return res.send({ message: error.message });
@@ -38,7 +52,7 @@ router.post("/", async (req, res) => {
 
     await Deposit.create(req.body);
 
-    return res.send("Request Sent successfully");
+    return res.status(200).send("Request Sent successfully");
   } catch (error) {
     return res.send({ message: error.message });
   }

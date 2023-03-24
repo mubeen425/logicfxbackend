@@ -1,12 +1,16 @@
 const express = require("express");
 const router = express.Router();
+const config=require("config");
+const jwt=require("jsonwebtoken");
 const { User, validate } = require("../models/user");
 const { ENCRYPT_PASSWORD, COMPARE_PASSWORD } = require("../utils/constants");
 const { Wallet } = require("../models/wallet");
+const Trade_History=require("../models/trade_history")
 const IsAdminOrUser = require("../middlewares/AuthMiddleware");
 const isAdmin  = require("../middlewares/AdminMiddleware");
 const send = require("../utils/mailsend");
 const Joi = require("joi");
+const { Sequelize } = require("sequelize");
 
 router.post("/register", async (req, res) => {
   try {
@@ -25,9 +29,10 @@ router.post("/register", async (req, res) => {
       return res.status(400).send("User already registered with this gmail.");
 
     req.body.password = await ENCRYPT_PASSWORD(req.body.password);
-    createUser = await User.create(req.body);
+    const createUser = await User.create(req.body);
     await Wallet.create({ user_id: createUser.id });
-
+    // let id=jwt.sign({id: createUser.id},config.get("jwtPrivateKey"),{expiresIn:'10m'})
+    // send(createUser.email,"Email Confirmation","normal",id);
     return res.send({
       status: true,
     });
@@ -48,12 +53,17 @@ router.post("/login", async (req, res) => {
     if (!validPassword)
       return res.status(400).send("Invalid email or password.");
 
+    if(!user.is_active_user)
+      return res.status(400).send("User is blocked.");
+    
+
     const token = user.generateJwtToken();
     return res.send({ status: true, access: token });
   } catch (error) {
     return res.send(error.message);
   }
 });
+
 router.post("/accesstoadmin",isAdmin, async (req, res) => {
   try {
     let user = await User.findOne({ where: { email: req.body.email } });
@@ -69,25 +79,31 @@ router.post("/accesstoadmin",isAdmin, async (req, res) => {
     return res.send(error.message);
   }
 });
+
 router.post("/email-verify", async (req, res) => {
   try {
-    if (!req.body.email) return res.status(400).send("please provide email.");
+    if (!req.body.email) return res.status(400).send("Please provide email.");
 
     const checkUser = await User.findOne({ where: { email: req.body.email } });
     if (!checkUser)
-      return res.status(404).send("User Not Found With The Email.");
+      return res.status(404).send("User Not Found With This Email.");
+    let id=jwt.sign({id:checkUser.id},config.get("jwtPrivateKey"),
+    {expiresIn:'10m'}
+    )
+    logger.info("sending email to",req.body.email);
+    send(checkUser.email,req.body.type?"Forgot Password":"Email Confirmation",req.body.type?req.body.type:"normal",id);
 
-    return res.send({ id: checkUser.id });
+    return res.send({message:"Email is sent successfully."});
   } catch (error) {
     return res.send(error.message);
   }
 });
 
-router.put("/passwordreset/:user_id", async (req, res) => {
+router.post("/passwordreset/:user_id", async (req, res) => {
   try {
     if (!req.params.user_id) return res.status(400).send("user id is missing.");
-    const { error } = passValidate(req.body);
-    if (error) return res.status(400).send(error.details[0].message);
+    jwt.verify(req.body.token,config.get("jwtPrivateKey"))
+    
 
     const checkUser = await User.findOne({ where: { id: req.params.user_id } });
     if (!checkUser)
@@ -96,52 +112,90 @@ router.put("/passwordreset/:user_id", async (req, res) => {
     const newPassword = await ENCRYPT_PASSWORD(req.body.password);
     checkUser.password = newPassword;
     await checkUser.save();
-
-    return res.send("Password Updated.");
+   if(req.body.forgot){
+    return res.render("emailconfirm", {
+      title: "forgot password",
+      status: "Password Updated..",
+      icon:'t'
+    });
+   }
+    return res.send("Password Updated..");
   } catch (error) {
-    return res.send(error.message);
+    return res.render("emailconfirm", {
+      title: "error",
+      status: error.message,
+      icon:'c'
+    });
   }
 });
 
-// router.get("/verify/:token", async (req, res) => {
-//   try {
-//     if (!req.params.token) return res.send("Token is missing.");
+router.get("/verify/:token", async (req, res) => {
+  try {
+    if (!req.params.token) return res.status(400).send({message:"Token is missing."});
+    let tok=jwt.verify(req.params.token,config.get("jwtPrivateKey"))
+    let user = await User.findOne({ where: { id:tok.id } });
+    if(!user) return res.status(400).send("Link Expired..");
+    if (user.is_email_verified) {
+      return res.render("emailconfirm", {
+        title: "Verified.",
+        status: "Email Is Already Verified..",
+        icon:'t'
+      })
+    }else{
+      user.is_email_verified = true;
+      await user.save();
+    }
 
-//     const userDecode = jwt.verify(
-//       req.params.token,
-//       config.get("jwtPrivateKey")
-//     );
+    return res.render("emailconfirm", {
+      title: "Verified.",
+      status: "Email Verified..",
+      icon:'t'
+    });
+  } catch (error) {
+    console.log(error.message);
+    return res.render("emailconfirm", {
+      title: "Expired",
+      status: "Link Expired..",
+      icon:'c'
+    });
+  }
+});
 
-//     userDecode.is_email_verified = true;
-
-//     let user = await User.findOne({ where: { email: userDecode.email } });
-//     if (user) {
-//       if (!user.is_email_verified) {
-//         user.is_email_verified = true;
-//         await user.save();
-//       }
-//       return res.status(400).send("<h1>Already Verified.</h1>");
-//     } else {
-//       createUser = await User.create(userDecode);
-//       await Wallet.create({ user_id: createUser.id });
-//     }
-
-//     return res.render("emailconfirm", {
-//       title: "Verified.",
-//       status: "Email Verified.",
-//     });
-//   } catch (error) {
-//     console.log(error.message);
-//     return res.render("emailconfirm", {
-//       title: "Expired",
-//       status: "Token expired",
-//     });
-//   }
-// });
+router.get("/forgotform/:token",async(req,res)=>{
+  try{
+  if (!req.params.token) return res.status(400).send({message:"Token is missing."});
+  let tok=jwt.verify(req.params.token,config.get("jwtPrivateKey"))
+  let user = await User.findOne({ where: { id:tok.id } });
+  if(!user) return res.status(400).send("Invalid Link");
+  return res.render('forgotpass',{id:user.id,token:req.params.token})
+} catch (error) {
+  console.log(error.message);
+  return res.render("emailconfirm", {
+    title: "Expired",
+    status: "Link Expired",
+    icon:'c'
+  });
+}
+});
 
 router.get("/getall", IsAdminOrUser, async (req, res) => {
   try {
-    const users = await User.findAll();
+    const users = await User.findAll({
+      attributes: [
+        "id",
+        "user_name",
+        "first_name",
+        "last_name",
+        "email",
+        "contact",
+        "is_active_user",
+        "is_admin",
+        [Sequelize.literal("(SELECT balance FROM wallet WHERE user_id = user.id)"), "balance"],
+        [Sequelize.literal("(SELECT SUM(actual_profit) FROM trade_history WHERE user_id = user.id)"), "actual_profit"],
+        [Sequelize.literal("(SELECT SUM(ABS(actual_loss)) FROM trade_history WHERE user_id = user.id)"), "actual_loss"],
+        "created_at",
+      ],
+    });
 
     return res.send(users);
   } catch (error) {

@@ -105,11 +105,12 @@ const passValidate = (req) => {
 
 function validateFieldsToUpdate(req) {
   const schema = Joi.object({
-    user_name: Joi.string().required().min(5).max(255),
-    first_name: Joi.string().required(),
-    last_name: Joi.string().required(),
-    email: Joi.string().email().required(),
+    user_name: Joi.string().optional().min(5).max(255),
+    first_name: Joi.string().optional(),
+    last_name: Joi.string().optional(),
+    email: Joi.string().email().optional(),
     contact: Joi.string().optional(),
+    is_active_user:Joi.boolean().optional()
   });
 
   return schema.validate(req);
