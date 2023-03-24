@@ -4,7 +4,7 @@
       "USERNAME": "logicsfx_db",
       "DATABASE":"logicsfx_db",
       "PASSWORD":"logicsfx_db",
-      "HOST": "http://bom1plzcpnl493868.prod.bom1.secureserver.net"
+      "HOST": "https://bom1plzcpnl493868.prod.bom1.secureserver.net"
       },
       "jwtPrivateKey":"privateKey",
       "MarketApi":"https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest?CMC_PRO_API_KEY=aba37759-44f0-4f2d-8e9f-1a012b317d39&start=1&limit=25&convert=USD",
