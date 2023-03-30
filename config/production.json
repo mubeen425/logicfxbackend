@@ -7,7 +7,7 @@
       "HOST": "bom1plzcpnl493868.prod.bom1.secureserver.net"
       },
       "jwtPrivateKey":"privateKey",
-      "MarketApi":"https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest?CMC_PRO_API_KEY=aba37759-44f0-4f2d-8e9f-1a012b317d39&start=1&limit=25&convert=USD",
+      "MarketApi":"https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest?CMC_PRO_API_KEY=6de3153b-004e-4ca3-bfce-6a103b61b0e1&start=1&limit=25&convert=USD",
       "baseurl":"",
       "SENDGRID_API_KEY":"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",
       "auth_user_email":"awais501.pk@gmail.com"
