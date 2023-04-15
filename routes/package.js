@@ -36,7 +36,7 @@ router.get('/', async (req, res) => {
     res.send(packages);
   } catch (error) {
     console.error('Error getting packages:', error);
-    res.status(500).send('Internal server error');
+    res.status(500).send(error);
   }
 });
 
