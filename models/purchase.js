@@ -16,6 +16,7 @@ const Purchase = connection.define('purchase', {
       model: Package,
       key: 'id',
     },
+    onDelete: 'CASCADE'
   },
   user_id: {
     type: DataTypes.INTEGER,
