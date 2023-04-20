@@ -5,7 +5,8 @@ const {Purchase} = require('../models/purchase');
 const {Wallet} = require('../models/wallet');
 const IsUser=require("../middlewares/AuthMiddleware")
 const router = express.Router();
-
+const moment = require('moment'); 
+const { Op } = require('sequelize');
 router.use(IsUser);
 
 router.post('/', async (req, res) => {
@@ -67,10 +68,16 @@ router.get('/', async (req, res) => {
     }
   });
 
-router.get('/:user_id', async (req, res) => {
+
+  router.get('/:user_id', async (req, res) => {
     try {
+      const cutoffDate = moment().subtract(1, 'month').toDate(); 
+  
       const purchases = await Purchase.findAll({
-        where:{user_id:req.params.user_id},
+        where: {
+          user_id: req.params.user_id,
+          created_at: { [Op.gt]: cutoffDate }, 
+        },
         include: [
           {
             model: User,
@@ -83,13 +90,20 @@ router.get('/:user_id', async (req, res) => {
         ],
       });
   
-      return res.send(purchases);
+      const results = purchases.map((purchase) => {
+        const remainingDays = moment(purchase.created_at).add(1, 'month').diff(moment(), 'days'); // Calculate remaining days
+        return {
+          ...purchase.toJSON(),
+          remaining_days: remainingDays,
+        };
+      });
+  
+      return res.send(results);
     } catch (error) {
       console.error(error);
       return res.status(500).send('An error occurred');
     }
   });
-
-
+  
 
 module.exports = router;

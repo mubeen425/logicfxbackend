@@ -37,7 +37,7 @@ router.put("/:user_id", async (req, res) => {
     });
     if (!findWalletWithUserId) return res.send("Wallet not found").status(404);
 
-    findWalletWithUserId.balance = req.body.balance;
+    findWalletWithUserId.balance += req.body.balance;
     await findWalletWithUserId.save();
   } catch (error) {
     return res.send(error.message);
