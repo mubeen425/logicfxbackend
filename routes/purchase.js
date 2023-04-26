@@ -60,8 +60,16 @@ router.get('/', async (req, res) => {
           },
         ],
       });
+
+      const results = purchases.map((purchase) => {
+        const remainingDays = moment(purchase.created_at).add(1, 'month').diff(moment(), 'days'); // Calculate remaining days
+        return {
+          ...purchase.toJSON(),
+          remaining_days: remainingDays,
+        };
+      });
   
-      return res.send(purchases);
+      return res.send(results);
     } catch (error) {
       console.error(error);
       return res.status(500).send('An error occurred');
